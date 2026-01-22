@@ -1,0 +1,8 @@
+com.googlecode.iterm2.plist
+plugin.jupyterlab-settings
+.key.txt.age
+
+.config/sheldon/plugin_sources
+.config/claude/rules
+.config/claude/skills
+.ccstatusline
