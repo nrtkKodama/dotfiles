@@ -1,0 +1,26 @@
+services:
+  python-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USERNAME: ${USERNAME:-devuser}
+        USER_UID: ${USER_UID:-1000}
+        USER_GID: ${USER_GID:-1000}
+    container_name: python-dev-env
+    
+    # Mount the root of the dotfiles repository to /app
+    volumes:
+      - ../../:/app
+      # Persist uv cache to avoid redownloading packages
+      - uv_cache:/home/${USERNAME:-devuser}/.cache/uv
+
+    # Environment variables
+    environment:
+      - TZ=Asia/Tokyo
+
+    tty: true
+    stdin_open: true
+
+volumes:
+  uv_cache:

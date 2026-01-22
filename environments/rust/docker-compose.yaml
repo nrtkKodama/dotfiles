@@ -1,0 +1,9 @@
+services:
+  rust-dev:
+    build: .
+    container_name: rust-dev-env
+    volumes:
+      - .:/app # カレントディレクトリをコンテナ内にマウント
+    working_dir: /app
+    tty: true
+    stdin_open: true
