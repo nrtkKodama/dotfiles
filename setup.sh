@@ -29,10 +29,12 @@ declare -r DOTFILES_LOGO='
 # ==============================================================================
 
 # Try to load config.env if it exists locally
-CONFIG_FILE="$(dirname "${BASH_SOURCE[0]}")/config.env"
-if [ -f "$CONFIG_FILE" ]; then
-    # shellcheck disable=SC1090
-    source "$CONFIG_FILE"
+if [ -n "${BASH_SOURCE[0]:-}" ]; then
+    CONFIG_FILE="$(dirname "${BASH_SOURCE[0]}")/config.env"
+    if [ -f "$CONFIG_FILE" ]; then
+        # shellcheck disable=SC1090
+        source "$CONFIG_FILE"
+    fi
 fi
 
 # Set defaults if variables are not set (e.g., when running via curl)
