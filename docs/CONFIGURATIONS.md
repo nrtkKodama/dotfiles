@@ -11,12 +11,11 @@ The `tmux` configuration is designed to work across **macOS**, **Ubuntu Desktop 
 
 ### Prefix Key
 
-| Environment | Connection | Prefix | Note |
-| :--- | :--- | :--- | :--- |
-| **Client** | Local | `C-z` | Standard desktop usage |
-| **Client** | SSH | `C-q` | Avoids conflict with local tmux |
-| **Server** | All | `C-q` | Standard server usage |
-| **Default** | - | `C-b` | **Unbound** |
+The prefix key is unified to `C-b` across all environments.
+
+| Key | Action |
+| :--- | :--- |
+| `C-b` | Default Prefix |
 
 ### Keybindings
 
