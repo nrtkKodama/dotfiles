@@ -45,7 +45,15 @@ fi
 : "${PRIVATE_DOTFILES_REPO_NAME:=dotfiles-private}"
 
 # Construct URLs and Paths based on variables
-declare -r DOTFILES_REPO_URL="https://github.com/${GITHUB_USER}/${DOTFILES_REPO_NAME}"
+# If running inside the repo (e.g., cloned locally), use the local path.
+# Otherwise, default to GitHub URL.
+if [ -d "${BASH_SOURCE[0]%/*}/.git" ]; then
+    DEFAULT_REPO_URL="$(cd "${BASH_SOURCE[0]%/*}" && pwd)"
+else
+    DEFAULT_REPO_URL="https://github.com/${GITHUB_USER}/${DOTFILES_REPO_NAME}"
+fi
+
+: "${DOTFILES_REPO_URL:=${DEFAULT_REPO_URL}}"
 declare -r BRANCH_NAME="${DOTFILES_BRANCH}"
 
 declare -r PRIVATE_DOTFILES_REPO_URL="https://github.com/${GITHUB_USER}/${PRIVATE_DOTFILES_REPO_NAME}"
