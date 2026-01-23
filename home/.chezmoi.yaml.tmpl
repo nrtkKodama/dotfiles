@@ -12,9 +12,25 @@
 {{- else if eq .chezmoi.os "darwin" -}}
 {{    $system = "client" -}}
 {{- else -}}
-{{-   $system = promptString "System (client or server)" -}}
+{{- $system = promptString "System (client or server)" -}}
+{{- end -}}
+
+{{- $git_name := "" -}}
+{{- if hasKey . "git_name" -}}
+{{-   $git_name = .git_name -}}
+{{- else -}}
+{{-   $git_name = promptString "Git Name" -}}
+{{- end -}}
+
+{{- $git_signingkey := "" -}}
+{{- if hasKey . "git_signingkey" -}}
+{{-   $git_signingkey = .git_signingkey -}}
+{{- else -}}
+{{-   $git_signingkey = promptString "Git Signing Key (optional, press enter to skip)" -}}
 {{- end -}}
 
 data:
     email: {{ $email | quote }}
     system: {{ $system | quote }}
+    git_name: {{ $git_name | quote }}
+    git_signingkey: {{ $git_signingkey | quote }}

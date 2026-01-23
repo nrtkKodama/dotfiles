@@ -43,6 +43,10 @@ This project supports a configuration-based setup using `config.env`. This allow
 
 See [docs/SETUP_WITH_CONFIG.md](docs/SETUP_WITH_CONFIG.md) for details.
 
+### 🔒 Encryption Setup (Optional)
+
+To securely manage secrets (SSH keys, tokens), see [docs/CHEZMOI_PASSWORD_SETUP.md](docs/CHEZMOI_PASSWORD_SETUP.md) and [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md) for safety guidelines.
+
 ### 💻 `MacOS` [![MacOS](https://github.com/nrtkKodama/dotfiles/actions/workflows/macos.yaml/badge.svg)](https://github.com/nrtkKodama/dotfiles/actions/workflows/macos.yaml)
 
 - Configuration snippet of the Apple Silicon MacOS environment for client machine:

@@ -1,0 +1,32 @@
+# Gemini CLI Configuration
+# Optimized for Software Engineering Tasks
+
+model: "gemini-2.0-flash-exp"
+temperature: 0.2  # Lower temperature for more deterministic/code-focused outputs
+max_output_tokens: 8192
+
+# Tool Use Settings
+tools:
+  - name: "run_shell_command"
+    enabled: true
+  - name: "read_file"
+    enabled: true
+  - name: "write_file"
+    enabled: true
+  - name: "replace"
+    enabled: true
+  - name: "search_file_content"
+    enabled: true
+  - name: "list_directory"
+    enabled: true
+
+# Safety Settings (Block none for code generation flexibility)
+safety_settings:
+  - category: "HARM_CATEGORY_HARASSMENT"
+    threshold: "BLOCK_NONE"
+  - category: "HARM_CATEGORY_HATE_SPEECH"
+    threshold: "BLOCK_NONE"
+  - category: "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+    threshold: "BLOCK_NONE"
+  - category: "HARM_CATEGORY_DANGEROUS_CONTENT"
+    threshold: "BLOCK_NONE"

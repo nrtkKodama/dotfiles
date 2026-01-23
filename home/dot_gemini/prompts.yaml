@@ -1,0 +1,61 @@
+# Reusable Prompts for Gemini CLI
+
+prompts:
+  refactor:
+    description: "Refactor code for better readability and performance"
+    content: |
+      You are an expert software engineer. Refactor the following code to improve readability, maintainability, and performance.
+      Follow these principles:
+      1. DRY (Don't Repeat Yourself)
+      2. SOLID principles
+      3. idiomatic usage of the language
+      
+      Code to refactor:
+      {{input}}
+
+  review:
+    description: "Perform a code review"
+    content: |
+      Review the provided code changes. Focus on:
+      - Potential bugs or edge cases
+      - Security vulnerabilities
+      - Code style consistency
+      - Performance implications
+      
+      Code:
+      {{input}}
+
+  doc:
+    description: "Generate documentation for code"
+    content: |
+      Generate comprehensive documentation for the following code.
+      Include:
+      - A high-level summary
+      - Function/Method descriptions with parameter and return value details
+      - Usage examples
+      
+      Code:
+      {{input}}
+
+  commit:
+    description: "Generate a commit message"
+    content: |
+      Generate a conventional commit message based on the staged changes.
+      Format: <type>(<scope>): <subject>
+      
+      <body>
+      
+      <footer>
+      
+      Diff:
+      {{input}}
+
+  test:
+    description: "Generate unit tests"
+    content: |
+      Write comprehensive unit tests for the following code.
+      Use the standard testing framework for the language (e.g., pytest for Python, jest for JS).
+      Cover happy paths and edge cases.
+      
+      Code:
+      {{input}}

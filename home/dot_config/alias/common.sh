@@ -12,3 +12,10 @@ alias claude-mem='$HOME/.bun/bin/bun "$HOME/.claude/plugins/marketplaces/thedotm
 
 # Alias to checkout the default branch in git
 alias gm='git checkout $(git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/origin/@@")'
+
+# Use bat for cat
+alias cat="bat"
+
+# Use bat as MANPAGER
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+

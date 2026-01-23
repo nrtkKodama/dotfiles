@@ -1,0 +1,47 @@
+# Files to ignore when sending context to Gemini
+
+# Git
+.git/
+.gitignore
+.gitmodules
+
+# Environment
+.env
+.venv/
+env/
+venv/
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build Artifacts
+build/
+dist/
+node_modules/
+target/
+*.o
+*.so
+*.dll
+*.class
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large/Binary Files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.pdf
+*.zip
+*.tar.gz
