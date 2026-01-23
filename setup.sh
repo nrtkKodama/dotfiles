@@ -47,10 +47,13 @@ fi
 # Construct URLs and Paths based on variables
 # If running inside the repo (e.g., cloned locally), use the local path.
 # Otherwise, default to GitHub URL.
-if [ -d "${BASH_SOURCE[0]%/*}/.git" ]; then
-    DEFAULT_REPO_URL="$(cd "${BASH_SOURCE[0]%/*}" && pwd)"
-else
-    DEFAULT_REPO_URL="https://github.com/${GITHUB_USER}/${DOTFILES_REPO_NAME}"
+DEFAULT_REPO_URL="https://github.com/${GITHUB_USER}/${DOTFILES_REPO_NAME}"
+
+if [ -n "${BASH_SOURCE[0]:-}" ]; then
+    SCRIPT_DIR="${BASH_SOURCE[0]%/*}"
+    if [ -d "${SCRIPT_DIR}/.git" ]; then
+        DEFAULT_REPO_URL="$(cd "${SCRIPT_DIR}" && pwd)"
+    fi
 fi
 
 : "${DOTFILES_REPO_URL:=${DEFAULT_REPO_URL}}"
