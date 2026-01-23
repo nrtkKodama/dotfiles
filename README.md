@@ -35,7 +35,7 @@ Ensure the following tools are installed on your system before running the setup
 ## 📥 Setup (Fresh Install)
 
 To set up the dotfiles on a new machine, run the following command.
-This script will detect your environment, install `chezmoi`, and prompt you for necessary configuration (email, git username, etc.).
+This script ([setup.sh](https://github.com/nrtkKodama/dotfiles/setup.sh)) will detect your environment, install `chezmoi`, and prompt you for necessary configuration (email, git username, etc.).
 
 ### 💻 `MacOS` / 🖥️ `Ubuntu`
 
