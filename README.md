@@ -52,12 +52,18 @@ During the setup process (`chezmoi init`), you will be prompted for:
 3.  **Git Name**: Your name for Git commits (e.g., "John Doe").
 4.  **Git Signing Key**: (Optional) GPG key ID for signing commits.
 
-*Note: If you have forked this repository, the setup script attempts to use your username to find the repo. If needed, you can override it:*
+*Note: The setup script defaults to using your local username as the GitHub owner. If you are using a fork or a different GitHub account, override it like this:*
 
 ```bash
-export GITHUB_USER="your-username"
-bash -c "$(curl ...)"
+export GITHUB_USER="nrtkKodama"
+bash -c "$(curl -fsLS https://raw.githubusercontent.com/${GITHUB_USER}/dotfiles/main/setup.sh)"
 ```
+
+### Minimal setup
+
+The following is a minimal setup command to install chezmoi and my dotfiles from the github repository on a new empty machine:
+
+> sh -c "$(curl -fsLS get.chezmoi.io)" -- init nrtkKodama --apply
 
 ### 🔒 Secrets Management
 
