@@ -18,9 +18,13 @@ help:
 	@echo "  make down    Stop and remove the container"
 	@echo "  make build   Rebuild the container image"
 	@echo "  make exec    Enter the running container shell"
-	@echo "  make root    Enter the running container shell as root"
 	@echo "  make logs    Show container logs"
 	@echo "  make clean   Stop container and remove volumes (clears cache)"
+	@echo ""
+	@echo "Singularity:"
+	@echo "  make singularity-build  Build the Singularity image (.sif)"
+	@echo "  make singularity-shell  Enter the Singularity container"
+
 
 .PHONY: up
 up:
@@ -38,10 +42,6 @@ build:
 exec:
 	docker compose exec python-dev bash
 
-.PHONY: root
-root:
-	docker compose exec --user root python-dev bash
-
 .PHONY: logs
 logs:
 	docker compose logs -f
@@ -49,3 +49,19 @@ logs:
 .PHONY: clean
 clean:
 	docker compose down -v
+	rm -f *.sif
+
+#
+# Singularity
+#
+
+SIF_IMAGE_NAME=python-dev.sif
+
+.PHONY: singularity-build
+singularity-build:
+	singularity build --fakeroot $(SIF_IMAGE_NAME) Singularity.def
+
+.PHONY: singularity-shell
+singularity-shell:
+	singularity shell $(SIF_IMAGE_NAME)
+
