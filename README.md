@@ -74,6 +74,10 @@ This repository is designed to be public, but your secrets (API keys, SSH keys) 
 *   **Safety Check**: Run `./scripts/check_secrets.sh` to scan for potential leaks.
 *   **Encryption**: Use `chezmoi`'s built-in age encryption for sensitive files.
 
+## ⚙️ Configuration Details
+
+Detailed documentation for tool configurations (Tmux, Zsh, etc.) can be found in [docs/CONFIGURATIONS.md](docs/CONFIGURATIONS.md).
+
 ## 🐍 Reproducible Environments
 
 This repository includes setup for reproducible development environments using **Docker** or **Singularity**.
