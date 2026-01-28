@@ -8,8 +8,8 @@
 {{- $system := "" -}}
 {{- if hasKey . "system" -}}
 {{-   $system = .system -}}
-{{- /* Set client to the MacOS default system */ -}}
-{{- else if eq .chezmoi.os "darwin" -}}
+{{- /* Set client to the MacOS/Windows default system */ -}}
+{{- else if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "windows") -}}
 {{    $system = "client" -}}
 {{- else -}}
 {{- $system = promptString "System (client or server)" -}}

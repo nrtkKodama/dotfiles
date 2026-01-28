@@ -1,0 +1,11 @@
+{{- if eq .chezmoi.os "windows" -}}
+# PowerShell script to backup existing SSH config
+$SshDir = "$env:USERPROFILE\.ssh"
+$ConfigFile = "$SshDir\config"
+$LocalConfigFile = "$SshDir\config.local"
+
+if ((Test-Path -Path $ConfigFile) -and -not (Test-Path -Path $LocalConfigFile)) {
+    Write-Host "Backing up existing SSH config to $LocalConfigFile"
+    Move-Item -Path $ConfigFile -Destination $LocalConfigFile -Force
+}
+{{- end -}}

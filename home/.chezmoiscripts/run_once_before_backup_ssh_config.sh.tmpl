@@ -1,0 +1,13 @@
+{{- if ne .chezmoi.os "windows" -}}
+#!/bin/bash
+set -euo pipefail
+
+SSH_DIR="${HOME}/.ssh"
+CONFIG_FILE="${SSH_DIR}/config"
+LOCAL_CONFIG_FILE="${SSH_DIR}/config.local"
+
+if [ -f "${CONFIG_FILE}" ] && [ ! -f "${LOCAL_CONFIG_FILE}" ]; then
+    echo "Backing up existing SSH config to ${LOCAL_CONFIG_FILE}"
+    mv "${CONFIG_FILE}" "${LOCAL_CONFIG_FILE}"
+fi
+{{- end -}}

@@ -1,0 +1,36 @@
+# PowerShell Profile managed by chezmoi
+
+# Set UTF-8 encoding
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
+# Environment Variables
+$env:EDITOR = "vim"
+if (Get-Command code -ErrorAction SilentlyContinue) {
+    $env:EDITOR = "code --wait"
+}
+
+# Path adjustments
+$env:PATH = "$HOME\.local\bin;$env:PATH"
+
+# Starship Init
+if (Get-Command starship -ErrorAction SilentlyContinue) {
+    Invoke-Expression (&starship init powershell)
+}
+
+# Sheldon Init
+if (Get-Command sheldon -ErrorAction SilentlyContinue) {
+    Invoke-Expression (&sheldon source)
+}
+
+# Aliases / Utilities
+if (Get-Command eza -ErrorAction SilentlyContinue) {
+    Set-Alias -Name ls -Value eza -Option AllScope
+    function ll { eza -l $args }
+    function la { eza -la $args }
+}
+
+# Enable 'sudo' (as alias to start-process verb runas)
+function sudo {
+    param([Parameter(Mandatory=$true)][string]$cmd, [string[]]$args)
+    Start-Process $cmd -ArgumentList $args -Verb RunAs
+}

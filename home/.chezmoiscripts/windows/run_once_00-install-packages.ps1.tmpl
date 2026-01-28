@@ -1,0 +1,4 @@
+{{- if eq .chezmoi.os "windows" -}}
+# {{ include "../../../install/windows/packages.ps1" | sha256sum }}
+{{ include "../../../install/windows/packages.ps1" }}
+{{- end -}}

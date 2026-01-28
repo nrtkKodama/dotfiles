@@ -1,6 +1,8 @@
 {{ template "chezmoiexternal.d/common.yaml.tmpl" . }}
 {{ if eq .chezmoi.os "darwin" -}}
 {{   template "chezmoiexternal.d/macos.yaml.tmpl" . }}
-{{ else -}}
+{{ else if eq .chezmoi.os "linux" -}}
 {{   template "chezmoiexternal.d/ubuntu.yaml.tmpl" . }}
+{{ else if eq .chezmoi.os "windows" -}}
+{{   /* Windows external config can be added here if needed, for now empty or specific includes */ -}}
 {{ end -}}

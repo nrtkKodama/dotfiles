@@ -41,7 +41,19 @@ This script ([setup.sh](https://github.com/nrtkKodama/dotfiles/setup.sh)) will d
 
 ```bash
 bash -c "$(curl -fsLS https://raw.githubusercontent.com/nrtkKodama/dotfiles/main/setup.sh)"
+```bash
+bash -c "$(curl -fsLS https://raw.githubusercontent.com/nrtkKodama/dotfiles/main/setup.sh)"
 ```
+
+### 🪟 `Windows`
+
+Open PowerShell as Administrator (recommended for package installation) and run:
+
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+irm https://raw.githubusercontent.com/nrtkKodama/dotfiles/main/setup.ps1 | iex
+```
+
 
 ### ⚙️ Interactive Configuration
 

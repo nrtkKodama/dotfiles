@@ -5,3 +5,5 @@ Host *
 
 Include conf.d/*.conf
 Include ~/.ssh/work.d/config
+Include ~/.ssh/config.local
+
