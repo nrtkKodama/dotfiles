@@ -92,8 +92,9 @@ function get_os_type() {
 
 function has_private_access() {
     # Check if we can access the private repository via SSH
-    # We use git ls-remoteCheck to verify access without cloning
-    if git ls-remote "${PRIVATE_DOTFILES_REPO_URL}" HEAD &>/dev/null; then
+    # We explicitly use the SSH URL to avoid HTTPS credential prompts
+    local ssh_url="git@github.com:${GITHUB_USER}/${PRIVATE_DOTFILES_REPO_NAME}.git"
+    if git ls-remote "${ssh_url}" HEAD &>/dev/null; then
         return 0
     else
         return 1
