@@ -73,10 +73,20 @@ function install_static_fallback() {
         tmux)
             if ! command -v tmux >/dev/null 2>&1; then
                 echo "Installing tmux via static build..."
-                # Download tmux static binary (latest stable typically) or appimage
-                # Using a known reliable static build for x86_64
-                curl -fsSL -o "$bindir/tmux" https://github.com/nelsonenzo/tmux-appimage/releases/download/3.3a/tmux.appimage
-                chmod +x "$bindir/tmux"
+                local appimage="$bindir/tmux-appimage"
+                curl -fsSL -o "$appimage" https://github.com/nelsonenzo/tmux-appimage/releases/download/3.3a/tmux.appimage
+                chmod +x "$appimage"
+                
+                # Try running it. If it fails (e.g. no FUSE), extract it.
+                if ! "$appimage" --version >/dev/null 2>&1; then
+                    echo "AppImage failed to run (likely no FUSE). Extracting..."
+                    (cd "$bindir" && "$appimage" --appimage-extract >/dev/null)
+                    # Create a wrapper or symlink to the extracted binary
+                    ln -sf "$bindir/squashfs-root/AppRun" "$bindir/tmux"
+                    rm "$appimage"
+                else
+                    mv "$appimage" "$bindir/tmux"
+                fi
             fi
             ;;
         cmake)
