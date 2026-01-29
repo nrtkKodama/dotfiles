@@ -4,5 +4,5 @@
 {{ else if eq .chezmoi.os "linux" -}}
 {{   template "chezmoiexternal.d/ubuntu.yaml.tmpl" . }}
 {{ else if eq .chezmoi.os "windows" -}}
-{{   /* Windows external config can be added here if needed, for now empty or specific includes */ -}}
+{{/* Windows external config can be added here if needed, for now empty or specific includes */ -}}
 {{ end -}}
