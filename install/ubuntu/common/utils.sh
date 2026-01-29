@@ -71,9 +71,13 @@ function install_static_fallback() {
             fi
             ;;
         tmux)
-            if ! command -v tmux >/dev/null 2>&1; then
-                echo "Installing tmux via static build..."
+            if ! command -v tmux >/dev/null 2>&1 || ! tmux --version >/dev/null 2>&1; then
+                echo "Installing/Repairing tmux via static build..."
                 local appimage="$bindir/tmux-appimage"
+                
+                # Cleanup old artifacts
+                rm -rf "$bindir/squashfs-root" "$bindir/tmux"
+                
                 curl -fsSL -o "$appimage" https://github.com/nelsonenzo/tmux-appimage/releases/download/3.3a/tmux.appimage
                 chmod +x "$appimage"
                 
@@ -81,11 +85,16 @@ function install_static_fallback() {
                 if ! "$appimage" --version >/dev/null 2>&1; then
                     echo "AppImage failed to run (likely no FUSE). Extracting..."
                     (cd "$bindir" && "$appimage" --appimage-extract >/dev/null)
-                    # Create a wrapper or symlink to the extracted binary
+                    # Link to the extracted binary (AppRun is usually a wrapper that sets LD_LIBRARY_PATH)
                     ln -sf "$bindir/squashfs-root/AppRun" "$bindir/tmux"
-                    rm "$appimage"
+                    rm -f "$appimage"
                 else
                     mv "$appimage" "$bindir/tmux"
+                fi
+                
+                if ! "$bindir/tmux" --version >/dev/null 2>&1; then
+                    echo "Error: Failed to install/extract a working tmux binary."
+                    return 1
                 fi
             fi
             ;;
