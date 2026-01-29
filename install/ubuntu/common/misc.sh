@@ -18,11 +18,11 @@ readonly PACKAGES=(
 )
 
 function install_apt_packages() {
-    sudo apt-get install -y "${PACKAGES[@]}"
+    apt_safe_install "${PACKAGES[@]}"
 }
 
 function uninstall_apt_packages() {
-    sudo apt-get remove -y "${PACKAGES[@]}"
+    apt_safe_remove "${PACKAGES[@]}"
 }
 
 function main() {

@@ -36,6 +36,10 @@ function run_sshd() {
 }
  
 function main() {
+    if ! has_sudo; then
+        echo "Skipping SSH Server setup (requires root privileges)."
+        return 0
+    fi
     install_openssh_server
     setup_sshd
     run_sshd

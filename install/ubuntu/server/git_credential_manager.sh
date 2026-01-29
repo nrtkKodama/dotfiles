@@ -21,6 +21,10 @@ function uninstall_git_credential_manager() {
 }
 
 function main() {
+    if ! has_sudo; then
+        echo "Skipping Git Credential Manager installation (requires root privileges)."
+        return 0
+    fi
     install_git_credential_manager
 }
 

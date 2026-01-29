@@ -14,11 +14,11 @@ readonly PACKAGES=(
 )
 
 function install_tmux() {
-    sudo apt-get install -y "${PACKAGES[@]}"
+    apt_safe_install "${PACKAGES[@]}"
 }
 
 function uninstall_tmux() {
-    sudo apt-get remove -y "${PACKAGES[@]}"
+    apt_safe_remove "${PACKAGES[@]}"
 }
 
 function main() {

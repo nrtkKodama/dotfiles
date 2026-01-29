@@ -6,48 +6,30 @@ if [ "${DOTFILES_DEBUG:-}" ]; then
     set -x
 fi
 
-# ==============================================================================
-# Configuration Loading
-# ==============================================================================
+# shellcheck disable=SC2016
+declare -r DOTFILES_LOGO='
+                          /$$                                      /$$
+                         | $$                                     | $$
+     /$$$$$$$  /$$$$$$  /$$$$$$   /$$   /$$  /$$$$$$      /$$$$$$$| $$$$$$$
+    /$$_____/ /$$__  $$|_  $$_/  | $$  | $$ /$$__  $$    /$$_____/| $$__  $$
+   |  $$$$$$ | $$$$$$$$  | $$    | $$  | $$| $$  \ $$   |  $$$$$$ | $$  \ $$
+    \____  $$| $$_____/  | $$ /$$| $$  | $$| $$  | $$    \____  $$| $$  | $$
+    /$$$$$$$/|  $$$$$$$  |  $$$$/|  $$$$$$/| $$$$$$$//$$ /$$$$$$$/| $$  | $$
+   |_______/  \_______/   \___/   \______/ | $$____/|__/|_______/ |__/  |__/
+                                           | $$
+                                           | $$
+                                           |__/
 
-# Try to load config.env if it exists locally
-if [ -n "${BASH_SOURCE[0]:-}" ]; then
-    CONFIG_FILE="$(dirname "${BASH_SOURCE[0]}")/config.env"
-    if [ -f "$CONFIG_FILE" ]; then
-        # shellcheck disable=SC1090
-        source "$CONFIG_FILE"
-    fi
-fi
+             *** This is setup script for my dotfiles setup ***            
+                     https://github.com/shunk031/dotfiles
+'
 
-# Set defaults if variables are not set (e.g., when running via curl)
-# These defaults align with the values in config.env.template
-: "${GITHUB_USER:=nrtkKodama}"
-: "${DOTFILES_REPO_NAME:=dotfiles}"
-: "${DOTFILES_BRANCH:=main}"
-: "${PRIVATE_DOTFILES_REPO_NAME:=dotfiles-private}"
+declare -r DOTFILES_REPO_URL="https://github.com/shunk031/dotfiles"
+declare -r BRANCH_NAME="${BRANCH_NAME:-master}"
 
-# Construct URLs and Paths based on variables
-# If running inside the repo (e.g., cloned locally), use the local path.
-# Otherwise, default to GitHub URL.
-DEFAULT_REPO_URL="https://github.com/${GITHUB_USER}/${DOTFILES_REPO_NAME}"
-
-if [ -n "${BASH_SOURCE[0]:-}" ]; then
-    SCRIPT_DIR="${BASH_SOURCE[0]%/*}"
-    if [ -d "${SCRIPT_DIR}/.git" ]; then
-        DEFAULT_REPO_URL="$(cd "${SCRIPT_DIR}" && pwd)"
-    fi
-fi
-
-: "${DOTFILES_REPO_URL:=${DEFAULT_REPO_URL}}"
-declare -r BRANCH_NAME="${DOTFILES_BRANCH}"
-
-declare -r PRIVATE_DOTFILES_REPO_URL="https://github.com/${GITHUB_USER}/${PRIVATE_DOTFILES_REPO_NAME}"
+declare -r PRIVATE_DOTFILES_REPO_URL="https://github.com/shunk031/dotfiles-private"
 declare -r PRIVATE_DOTFILES_PATH="${HOME}/.local/share/chezmoi-private"
 declare -r PRIVATE_DOTFILES_CONFIG_PATH="${HOME}/.config/chezmoi-private/chezmoi.yaml"
-
-# ==============================================================================
-# Utility Functions
-# ==============================================================================
 
 function is_ci() {
     "${CI:-false}"
@@ -65,39 +47,72 @@ function is_ci_or_not_tty() {
     is_ci || is_not_tty
 }
 
-function print_logo() {
-    cat <<EOF
-
-                          /$$                                      /$$
-                         | $$                                     | $$
-     /$$$$$$$  /$$$$$$  /$$$$$$   /$$   /$$  /$$$$$$      /$$$$$$$| $$$$$$$
-    /$$_____/ /$$__  $$|_  $$_/  | $$  | $$ /$$__  $$    /$$_____/| $$__  $$
-   |  $$$$$$ | $$$$$$$$  | $$    | $$  | $$| $$  \ $$   |  $$$$$$ | $$  \ $$
-    \____  $$| $$_____/  | $$ /$$| $$  | $$| $$  | $$\    \____  $$| $$  | $$
-    /$$$$$$$/|  $$$$$$$  |  $$$$/|  $$$$$$/| $$$$$$$//$$ /$$$$$$$/| $$  | $$
-   |_______/  \_______/   \___/   \______/ | $$____/|__/|_______/ |__/  |__/
-                                           | $$
-                                           | $$
-                                           |__/
-
-             *** This is setup script for my dotfiles setup ***            
-                     ${DOTFILES_REPO_URL}
-
-EOF
+function at_exit() {
+    AT_EXIT+="${AT_EXIT:+$'\n'}"
+    AT_EXIT+="${*?}"
+    # shellcheck disable=SC2064
+    trap "${AT_EXIT}" EXIT
 }
 
 function get_os_type() {
     uname
 }
 
-function has_private_access() {
-    # Check if we can access the private repository via SSH
-    # We explicitly use the SSH URL to avoid HTTPS credential prompts
-    local ssh_url="git@github.com:${GITHUB_USER}/${PRIVATE_DOTFILES_REPO_NAME}.git"
-    if git ls-remote "${ssh_url}" HEAD &>/dev/null; then
-        return 0
+function keepalive_sudo_linux() {
+    # Might as well ask for password up-front, right?
+    echo "Checking for \`sudo\` access which may request your password."
+    sudo -v
+
+    # Keep-alive: update existing sudo time stamp if set, otherwise do nothing.
+    while true; do
+        sudo -n true
+        sleep 60
+        kill -0 "$$" || exit
+    done 2>/dev/null &
+}
+
+function keepalive_sudo_macos() {
+    # ref. https://github.com/reitermarkus/dotfiles/blob/master/.sh#L85-L116
+    (
+        builtin read -r -s -p "Password: " </dev/tty
+        builtin echo "add-generic-password -U -s 'dotfiles' -a '${USER}' -w '${REPLY}'"
+    ) | /usr/bin/security -i
+    printf "\n"
+    at_exit "
+                echo -e '\033[0;31mRemoving password from Keychain …\033[0m'
+                /usr/bin/security delete-generic-password -s 'dotfiles' -a '${USER}'
+            "
+    SUDO_ASKPASS="$(/usr/bin/mktemp)"
+    at_exit "
+                echo -e '\033[0;31mDeleting SUDO_ASKPASS script …\033[0m'
+                /bin/rm -f '${SUDO_ASKPASS}'
+            "
+    {
+        echo "#!/bin/sh"
+        echo "/usr/bin/security find-generic-password -s 'dotfiles' -a '${USER}' -w"
+    } >"${SUDO_ASKPASS}"
+
+    /bin/chmod +x "${SUDO_ASKPASS}"
+    export SUDO_ASKPASS
+
+    if ! /usr/bin/sudo -A -kv 2>/dev/null; then
+        echo -e '\033[0;31mIncorrect password.\033[0m' 1>&2
+        exit 1
+    fi
+}
+
+function keepalive_sudo() {
+
+    local ostype
+    ostype="$(get_os_type)"
+
+    if [ "${ostype}" == "Darwin" ]; then
+        keepalive_sudo_macos
+    elif [ "${ostype}" == "Linux" ]; then
+        keepalive_sudo_linux
     else
-        return 1
+        echo "Invalid OS type: ${ostype}" >&2
+        exit 1
     fi
 }
 
@@ -178,21 +193,25 @@ function run_chezmoi() {
 
     # run `chezmoi init` for private dotfiles
     # Note: If `--config ~/.config/chezmoi/chezmoi.yaml` is not specified, it seems to use the same config file as the public dotfiles.
-    if ! has_private_access; then
-        echo "Skipping private dotfiles (no access rights)..."
-    elif ! "${chezmoi_cmd}" init \
+    "${chezmoi_cmd}" init \
         --apply \
         --ssh \
         --source "${PRIVATE_DOTFILES_PATH}" \
         --config "${PRIVATE_DOTFILES_CONFIG_PATH}" \
-        "${PRIVATE_DOTFILES_REPO_URL}"; then
-        echo "Warning: Failed to setup private dotfiles. Skipping."
-    fi
+        "${PRIVATE_DOTFILES_REPO_URL}"
 
-    echo "Dotfiles setup completed successfully!"
+    # purge the binary of the chezmoi cmd
+    rm -fv "${chezmoi_cmd}"
 }
 
 function initialize_dotfiles() {
+
+    if ! is_ci_or_not_tty; then
+        # - /dev/tty of the github workflow is not available.
+        # - We can use password-less sudo in the github workflow.
+        # Therefore, skip the sudo keep alive function.
+        keepalive_sudo
+    fi
     run_chezmoi
 }
 
@@ -207,18 +226,8 @@ function restart_shell_system() {
     system=$(get_system_from_chezmoi)
 
     # exec shell as login shell (to reload the .zprofile or .profile)
-    # exec shell as login shell (to reload the .zprofile or .profile)
     if [ "${system}" == "client" ]; then
-        if command -v zsh >/dev/null 2>&1; then
-            exec zsh --login
-        elif [ -x "${HOME}/.local/share/mise/shims/zsh" ]; then
-             exec "${HOME}/.local/share/mise/shims/zsh" --login
-        elif [ -x "/bin/zsh" ]; then
-            /bin/zsh --login
-        else
-            echo "Warning: zsh not found. Falling back to bash."
-            /bin/bash --login
-        fi
+        /bin/zsh --login
 
     elif [ "${system}" == "server" ]; then
         /bin/bash --login
@@ -243,7 +252,7 @@ function restart_shell() {
 }
 
 function main() {
-    print_logo
+    echo "${DOTFILES_LOGO}"
 
     initialize_os_env
     initialize_dotfiles
