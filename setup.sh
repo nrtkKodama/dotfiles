@@ -90,6 +90,16 @@ function get_os_type() {
     uname
 }
 
+function has_private_access() {
+    # Check if we can access the private repository via SSH
+    # We use git ls-remoteCheck to verify access without cloning
+    if git ls-remote "${PRIVATE_DOTFILES_REPO_URL}" HEAD &>/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function initialize_os_macos() {
     function is_homebrew_exists() {
         command -v brew &>/dev/null
@@ -167,15 +177,18 @@ function run_chezmoi() {
 
     # run `chezmoi init` for private dotfiles
     # Note: If `--config ~/.config/chezmoi/chezmoi.yaml` is not specified, it seems to use the same config file as the public dotfiles.
-    "${chezmoi_cmd}" init \
+    if ! has_private_access; then
+        echo "Skipping private dotfiles (no access rights)..."
+    elif ! "${chezmoi_cmd}" init \
         --apply \
         --ssh \
         --source "${PRIVATE_DOTFILES_PATH}" \
         --config "${PRIVATE_DOTFILES_CONFIG_PATH}" \
-        "${PRIVATE_DOTFILES_REPO_URL}"
+        "${PRIVATE_DOTFILES_REPO_URL}"; then
+        echo "Warning: Failed to setup private dotfiles. Skipping."
+    fi
 
-    # purge the binary of the chezmoi cmd
-    # rm -fv "${chezmoi_cmd}"
+    echo "Dotfiles setup completed successfully!"
 }
 
 function initialize_dotfiles() {
