@@ -62,6 +62,11 @@ function uninstall_docker_engine() {
 }
 
 function main() {
+    if ! has_sudo; then
+        echo "Skipping Docker installation (requires root privileges)."
+        return 0
+    fi
+
     uninstall_old_docker
     setup_repository
     install_docker_engine

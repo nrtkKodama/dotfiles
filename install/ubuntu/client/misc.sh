@@ -12,7 +12,7 @@ readonly PACKAGES=(
 )
 
 function install_misc() {
-    sudo apt-get install -y "${PACKAGES[@]}"
+    apt_safe_install "${PACKAGES[@]}"
 }
 
 function uninstall_misc() {

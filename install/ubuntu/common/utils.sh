@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+# Function to check if we have sudo privileges (safe, non-interactive)
+function has_sudo() {
+    if [ "$EUID" -eq 0 ]; then
+        return 0
+    fi
+    if sudo -n true 2>/dev/null; then
+        return 0
+    fi
+    return 1
+}
+
 # Function to check if a package is installed
 function is_installed() {
     dpkg -s "$1" &> /dev/null

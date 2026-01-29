@@ -2,6 +2,7 @@
 {{ if eq .chezmoi.os "linux" -}}
 {{   if eq .chezmoi.osRelease.idLike "debian" -}}
 {{     if eq .system "client" -}}
+{{       include "../install/ubuntu/common/utils.sh" }}
 {{       include "../install/ubuntu/client/docker.sh" }}
 {{     end -}}
 {{   end -}}
